@@ -48,8 +48,7 @@ class ItemCoffeeHome {
     fun ItemCoffee(
         modifier: Modifier = Modifier,
         context: Context,
-        model: ProductModel,
-        tokoModel: TokoModel
+        model: ProductModel
     ) {
         Column(modifier = modifier.background(Color.White)) {
             AsyncImage(
@@ -80,7 +79,7 @@ class ItemCoffeeHome {
                         modifier = Modifier.width(150.dp).padding(horizontal = 10.dp)
                     )
                     Text(
-                        text = tokoModel.nama,
+                        text = model.nama_toko,
                         fontFamily = MontSerrat,
                         fontWeight = FontWeight.Medium,
                         color = Grey,
@@ -137,7 +136,8 @@ class ItemCoffeeHome {
             "https://img.freepik.com/free-photo/top-view-hot-espresso-with-brown-coffee-seeds-brown-wooden-desk-coffee-cup-drink_140725-28168.jpg?w=740&t=st=1685772072~exp=1685772672~hmac=5377644915f2e0afe784484004834a50a7e3be388e1fbdf1a77a3ef5fa585671",
             1,
             "",
-            1
+            1,
+            "broshop"
         )
         val tokoModel = TokoModel(
             1,
@@ -149,7 +149,7 @@ class ItemCoffeeHome {
             1
         )
         CoffeeAroundUComposeTheme {
-            ItemCoffee(context = LocalContext.current, model = model, tokoModel = tokoModel)
+            ItemCoffee(context = LocalContext.current, model = model)
         }
     }
 }

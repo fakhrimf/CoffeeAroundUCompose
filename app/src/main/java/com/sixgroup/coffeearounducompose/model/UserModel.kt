@@ -1,4 +1,4 @@
-package com.sixgroup.coffeearoundu.model
+package com.sixgroup.coffeearounducompose.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
@@ -21,5 +21,7 @@ data class UserModel(
     @SerializedName("role")
     var role: String,
     @SerializedName("foto")
-    var foto: String
+    var foto: String,
+    @SerializedName("token")
+    var token: String,
 ) : Parcelable
