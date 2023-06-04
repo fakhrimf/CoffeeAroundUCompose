@@ -1,18 +1,18 @@
 package com.sixgroup.coffeearounducompose
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import com.sixgroup.coffeearounducompose.ui.home.HomeActivity
 import com.sixgroup.coffeearounducompose.ui.login.LoginView
 import com.sixgroup.coffeearounducompose.ui.theme.CoffeeAroundUComposeTheme
+import com.sixgroup.coffeearounducompose.utils.Repository
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,24 +20,20 @@ class MainActivity : ComponentActivity() {
         setContent {
             CoffeeAroundUComposeTheme {
                 // A surface container using the 'background' color from the theme
-                LoginView().LoginMain(context = LocalContext.current)
+                if (Repository.checkLogin(context = LocalContext.current)) {
+                    startActivity(Intent(LocalContext.current, HomeActivity::class.java))
+                    this.finish()
+                }
+                LoginView().LoginMain(context = LocalContext.current, activity = this)
             }
         }
     }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     CoffeeAroundUComposeTheme {
-        LoginView().LoginMain(context = LocalContext.current)
+        LoginView().LoginMain(context = LocalContext.current, activity = MainActivity())
     }
 }

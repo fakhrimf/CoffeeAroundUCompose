@@ -54,14 +54,14 @@ fun TransaksiView(context: Context, modifier: Modifier = Modifier) {
             title = "Ongoing",
             icon = Icons.Filled.Coffee,
             screen = {
-                TabScreen(context = context, isOngoing = true)
+                TabScreenOngoing(context = context)
             }
         ),
         TabItem(
             title = "Selesai",
             icon = Icons.Filled.Check,
             screen = {
-                TabScreen(context = context, isOngoing = false)
+                TabScreenDone(context = context)
             }
         )
     )
@@ -92,13 +92,20 @@ fun TransaksiView(context: Context, modifier: Modifier = Modifier) {
             }
         }
         HorizontalPager(state = pagerState) {
-            tabs[pagerState.currentPage].screen()
+            when(it) {
+                0 -> {
+                    TabScreenOngoing(context = context)
+                }
+                1 -> {
+                    TabScreenDone(context = context)
+                }
+            }
         }
     }
 }
 
 @Composable
-fun TabScreen(isOngoing: Boolean = true, context: Context) {
+fun TabScreenOngoing(context: Context) {
     LazyColumn {
         val prods = DummyModel.generateDummyProducts(10)
         val tokos = DummyModel.generateDummyTokos(10)
@@ -109,7 +116,27 @@ fun TabScreen(isOngoing: Boolean = true, context: Context) {
                     model = it,
                     tokoModel = tokos[it.id_toko],
                     context = context,
-                    isOngoing = isOngoing
+                    isOngoing = true
+                )
+            }
+        }
+    }
+}
+
+
+@Composable
+fun TabScreenDone(context: Context) {
+    LazyColumn {
+        val prods = DummyModel.generateDummyProducts(10)
+        val tokos = DummyModel.generateDummyTokos(10)
+        items(prods.toList(), key = { it.id }) {
+            Spacer(modifier = Modifier.padding(5.dp))
+            Box(modifier = Modifier.padding(horizontal = 10.dp)) {
+                ItemTransaction().ItemTransactionView(
+                    model = it,
+                    tokoModel = tokos[it.id_toko],
+                    context = context,
+                    isOngoing = false
                 )
             }
         }

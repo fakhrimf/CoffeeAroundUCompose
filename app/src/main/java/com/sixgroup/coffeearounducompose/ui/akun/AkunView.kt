@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Card
@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.sixgroup.coffeearoundu.model.UserModel
+import com.sixgroup.coffeearounducompose.model.UserModel
 import com.sixgroup.coffeearounducompose.R
 import com.sixgroup.coffeearounducompose.ui.theme.Accent
 import com.sixgroup.coffeearounducompose.ui.theme.CoffeeAroundUComposeTheme
@@ -62,21 +62,24 @@ class AkunView {
                 containerColor = Grey.copy(0.2f)
             )) {
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(context = context)
-                            .data(model.foto)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = model.name,
-                        placeholder = painterResource(id = R.drawable.coffee_placeholder),
-                        contentScale = ContentScale.Crop,
+                    Card(
+                        elevation = CardDefaults.cardElevation(0.dp),
+                        colors = CardDefaults.cardColors(containerColor = DarkBrown.copy(0.4f)),
                         modifier = Modifier
                             .padding(10.dp)
-                            .width(74.dp)
-                            .height(74.dp)
-                            .clip(CircleShape)
-                    )
-                    Column(modifier = Modifier.padding(vertical = 24.dp)) {
+                            .clip(CircleShape),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Person,
+                            contentDescription = "edit_akun",
+                            modifier = Modifier
+                                .width(54.dp)
+                                .height(54.dp)
+                                .padding(10.dp),
+                            tint = Accent
+                        )
+                    }
+                    Column(modifier = Modifier.padding(vertical = 16.dp)) {
                         Text(
                             text = model.name,
                             fontFamily = MontSerrat,
@@ -236,7 +239,8 @@ class AkunView {
                 name = "MePet",
                 password = "lohe",
                 phone_number = "+62821756390",
-                role = "user"
+                role = "user",
+                token = ""
             )
             AkunPage(context = LocalContext.current, model = userModel)
         }

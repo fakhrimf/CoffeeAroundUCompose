@@ -1,6 +1,10 @@
 package com.sixgroup.coffeearounducompose.ui.login
 
 import android.content.Context
+import android.content.Intent
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,6 +26,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,28 +52,33 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import com.sixgroup.coffeearounducompose.R
+import com.sixgroup.coffeearounducompose.ui.home.HomeActivity
 import com.sixgroup.coffeearounducompose.ui.theme.Accent
 import com.sixgroup.coffeearounducompose.ui.theme.Background
 import com.sixgroup.coffeearounducompose.ui.theme.CoffeeAroundUComposeTheme
 import com.sixgroup.coffeearounducompose.ui.theme.DarkBrown
 import com.sixgroup.coffeearounducompose.ui.theme.MontSerrat
-import com.sixgroup.coffeearounducompose.utils.CustomView
 import com.sixgroup.coffeearounducompose.utils.CustomView.ButtonText
 import com.sixgroup.coffeearounducompose.utils.CustomView.InfoText
 import com.sixgroup.coffeearounducompose.utils.CustomView.TextClick
 import com.sixgroup.coffeearounducompose.utils.CustomView.Title
+import es.dmoral.toasty.Toasty
 
 class LoginView {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun LoginMain(context: Context) {
+    fun LoginMain(context: Context, activity: ComponentActivity) {
         Column(
             modifier = Modifier
                 .background(Background)
                 .fillMaxWidth()
                 .fillMaxHeight(),
         ) {
+            val viewModel = ViewModelProvider(activity)[LoginViewModel::class.java]
             var loginInput by rememberSaveable {
                 mutableStateOf("")
             }
@@ -162,14 +172,31 @@ class LoginView {
                     .clip(CircleShape),
                 colors = textFieldColors
             )
-
-            Row(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
-                Checkbox(checked = isChecked, onCheckedChange = { isChecked = !isChecked })
-                TextClick(text = "Remember Me", modifier = Modifier.align(Alignment.CenterVertically))
+//            Row(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
+//                Checkbox(checked = isChecked, onCheckedChange = { isChecked = !isChecked })
+//                TextClick(
+//                    text = "Remember Me",
+//                    modifier = Modifier.align(Alignment.CenterVertically)
+//                )
+//            }
+            var isLoggingIn by rememberSaveable {
+                mutableStateOf(false)
             }
-
             Button(
                 onClick = {
+                    isLoggingIn = true
+                    val login = viewModel.login(loginInput, passwordInput, context)
+                    login.observe(activity) {
+                        Log.d("Hasil Login", "LoginMain: $it")
+                        isLoggingIn = if (it.message == null) {
+                            context.startActivity(Intent(context, HomeActivity::class.java))
+                            activity.finish()
+                            false
+                        } else {
+                            Toasty.error(context, "Email atau Password Salah").show()
+                            false
+                        }
+                    }
 //                    context.startActivity(Intent(context, MainActivity::class.java))
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Accent),
@@ -177,9 +204,15 @@ class LoginView {
                     .fillMaxWidth()
                     .padding(top = 12.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)
                     .height(60.dp),
+                enabled = !isLoggingIn,
                 content = {
-                    ButtonText(text = "LOGIN")
-                })
+                    if (isLoggingIn) {
+                        CircularProgressIndicator(color = Accent)
+                    } else {
+                        ButtonText(text = "LOGIN")
+                    }
+                },
+            )
 
             Row(modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp)) {
                 InfoText(text = "No Account?")
@@ -197,7 +230,7 @@ class LoginView {
     @Composable
     fun MainPreview() {
         CoffeeAroundUComposeTheme {
-            LoginMain(LocalContext.current)
+//            LoginMain(LocalContext.current, this, )
         }
     }
 }

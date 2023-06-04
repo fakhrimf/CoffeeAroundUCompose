@@ -24,4 +24,6 @@ data class ProductModel(
     var reason: String?,
     @SerializedName("id_toko")
     var id_toko: Int,
+    @SerializedName("nama_toko")
+    var nama_toko: String,
 ) : Parcelable

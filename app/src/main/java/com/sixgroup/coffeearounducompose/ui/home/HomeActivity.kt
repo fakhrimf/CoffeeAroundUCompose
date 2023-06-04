@@ -2,12 +2,15 @@ package com.sixgroup.coffeearounducompose.ui.home
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,9 +19,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,7 +37,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -41,15 +52,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.sixgroup.coffeearoundu.model.UserModel
 import com.sixgroup.coffeearounducompose.R
 import com.sixgroup.coffeearounducompose.model.DummyModel
+import com.sixgroup.coffeearounducompose.model.ProductModel
+import com.sixgroup.coffeearounducompose.model.UserModel
 import com.sixgroup.coffeearounducompose.ui.akun.AkunView
 import com.sixgroup.coffeearounducompose.ui.items.ItemCafeHome
 import com.sixgroup.coffeearounducompose.ui.items.ItemCoffeeHome
@@ -59,6 +72,9 @@ import com.sixgroup.coffeearounducompose.ui.theme.DarkBrown
 import com.sixgroup.coffeearounducompose.ui.theme.MontSerrat
 import com.sixgroup.coffeearounducompose.ui.transaksi.TransaksiView
 import com.sixgroup.coffeearounducompose.utils.BottomNavItem
+import com.sixgroup.coffeearounducompose.utils.Repository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +86,7 @@ class HomeActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeContent()
+                    HomeContent(this)
                 }
             }
         }
@@ -79,7 +95,7 @@ class HomeActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeContent() {
+fun HomeContent(activity: ComponentActivity) {
     val navController = rememberNavController()
     Scaffold(
         topBar = {
@@ -93,7 +109,8 @@ fun HomeContent() {
             MainNavGraph(
                 navHostController = navController,
                 context = LocalContext.current,
-                modifier = Modifier.padding(it)
+                modifier = Modifier.padding(it),
+                activity = activity
             )
         }
     }
@@ -143,7 +160,11 @@ fun PreviewTopBar() {
 }
 
 @Composable
-fun HomeView(modifier: Modifier = Modifier) {
+fun HomeView(modifier: Modifier = Modifier, activity: ComponentActivity) {
+    val viewModel = ViewModelProvider(activity)[HomeViewModel::class.java]
+    var isLoading by rememberSaveable {
+        mutableStateOf(true)
+    }
     Column(modifier = modifier) {
         Text(
             text = "Coffee Around U",
@@ -153,17 +174,18 @@ fun HomeView(modifier: Modifier = Modifier) {
             color = Color.Black,
             modifier = Modifier.padding(start = 24.dp, top = 24.dp)
         )
+        viewModel.getAllProducts()
+        val products by viewModel.products.collectAsState()
         LazyRow(modifier = Modifier.fillMaxWidth()) {
-            val prods = DummyModel.generateDummyProducts(10)
-            val tokos = DummyModel.generateDummyTokos(10)
-            items(prods.toList(), key = { it.id }) {
-                if (it.id == 0) {
+            Log.d("DATA", "HomeView: $viewModel.products")
+            itemsIndexed(products) {index, model ->
+                Log.d("bruh", "HomeView: $model")
+                if (index == 0) {
                     Spacer(modifier = Modifier.padding(5.dp))
                 }
                 ItemCoffeeHome().ItemCoffee(
                     context = LocalContext.current,
-                    model = it,
-                    tokoModel = tokos[it.id_toko]
+                    model = model,
                 )
             }
         }
@@ -239,7 +261,8 @@ fun BottomNav(navController: NavController) {
 fun MainNavGraph(
     navHostController: NavHostController,
     context: Context,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    activity: ComponentActivity
 ) {
     NavHost(
         navController = navHostController,
@@ -250,7 +273,7 @@ fun MainNavGraph(
             .fillMaxHeight()
     ) {
         composable(BottomNavItem.Home.route) {
-            HomeView()
+            HomeView(activity = activity)
         }
         composable(BottomNavItem.Transaksi.route) {
             TransaksiView(context = context)
@@ -264,9 +287,10 @@ fun MainNavGraph(
                 name = "MePet",
                 password = "lohe",
                 phone_number = "+62821756390",
-                role = "user"
+                role = "user",
+                token = ""
             )
-            AkunView().AkunPage(model = userModel, context = context)
+            AkunView().AkunPage(model = Repository.getLoginKey(context), context = context)
         }
     }
 }
@@ -275,6 +299,6 @@ fun MainNavGraph(
 @Composable
 fun HomeContentPreview() {
     CoffeeAroundUComposeTheme {
-        HomeContent()
+        HomeContent(HomeActivity())
     }
 }

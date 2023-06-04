@@ -128,7 +128,8 @@ class ItemTransaction {
             "https://img.freepik.com/free-photo/top-view-hot-espresso-with-brown-coffee-seeds-brown-wooden-desk-coffee-cup-drink_140725-28168.jpg?w=740&t=st=1685772072~exp=1685772672~hmac=5377644915f2e0afe784484004834a50a7e3be388e1fbdf1a77a3ef5fa585671",
             1,
             "",
-            1
+            1,
+            "gayming"
         )
         val tokoModel = TokoModel(
             1,
