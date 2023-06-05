@@ -1,7 +1,9 @@
 package com.sixgroup.coffeearounducompose.ui.items
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,11 +30,13 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.sixgroup.coffeearounducompose.R
 import com.sixgroup.coffeearounducompose.model.TokoModel
+import com.sixgroup.coffeearounducompose.ui.detail.DetailCafeActivity
 import com.sixgroup.coffeearounducompose.ui.theme.Accent
 import com.sixgroup.coffeearounducompose.ui.theme.CoffeeAroundUComposeTheme
 import com.sixgroup.coffeearounducompose.ui.theme.DarkBrown
 import com.sixgroup.coffeearounducompose.ui.theme.Grey
 import com.sixgroup.coffeearounducompose.ui.theme.MontSerrat
+import com.sixgroup.coffeearounducompose.utils.Constants
 import com.sixgroup.coffeearounducompose.utils.Constants.IMAGE_URL
 
 class ItemCafeHome {
@@ -43,7 +47,15 @@ class ItemCafeHome {
         context: Context,
         tokoModel: TokoModel
     ) {
-        Column(modifier = modifier.background(Color.White)) {
+        Column(
+            modifier = modifier
+                .background(Color.White)
+                .clickable {
+                    val intent = Intent(context, DetailCafeActivity::class.java)
+                    intent.putExtra(Constants.TOKO_DETAIL, tokoModel)
+                    context.startActivity(intent)
+                },
+        ) {
             AsyncImage(
                 model = ImageRequest.Builder(context = context)
                     .data("$IMAGE_URL${tokoModel.icon_url}")
@@ -85,7 +97,12 @@ class ItemCafeHome {
                 )
             }
             Card(
-                onClick = { /*TODO*/ },
+                onClick = {
+
+                    val intent = Intent(context, DetailCafeActivity::class.java)
+                    intent.putExtra(Constants.TOKO_DETAIL, tokoModel)
+                    context.startActivity(intent)
+                },
                 modifier = Modifier
                     .padding(horizontal = 10.dp)
                     .width(130.dp),
@@ -104,7 +121,7 @@ class ItemCafeHome {
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .width(150.dp)
-                        .padding(5.dp)
+                        .padding(10.dp)
                 )
             }
         }
@@ -117,8 +134,8 @@ class ItemCafeHome {
             1,
             "Tel-U Coffee",
             "Jl. Telekomunikasi No. 1",
-            5.0.toFloat(),
-            (-100.0).toFloat(),
+            5.0.toString(),
+            (-100.0).toString(),
             "https://img.freepik.com/free-photo/top-view-hot-espresso-with-brown-coffee-seeds-brown-wooden-desk-coffee-cup-drink_140725-28168.jpg?w=740&t=st=1685772072~exp=1685772672~hmac=5377644915f2e0afe784484004834a50a7e3be388e1fbdf1a77a3ef5fa585671",
             1
         )

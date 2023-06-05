@@ -30,8 +30,8 @@ object DummyModel {
                     i,
                     "Toko $i",
                     "Jl. Telekomunikasi No. $i",
-                    0.0.toFloat(),
-                    0.0.toFloat(),
+                    0.0.toString(),
+                    0.0.toString(),
                     "https://cdn.discordapp.com/attachments/775027234096414720/1111591176634630174/backdrop.png",
                     i
                 )

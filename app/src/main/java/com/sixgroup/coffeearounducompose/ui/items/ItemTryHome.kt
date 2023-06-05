@@ -33,6 +33,7 @@ import coil.request.ImageRequest
 import com.sixgroup.coffeearounducompose.R
 import com.sixgroup.coffeearounducompose.model.ProductModel
 import com.sixgroup.coffeearounducompose.ui.detail.DetailViewActivity
+import com.sixgroup.coffeearounducompose.ui.theme.Accent
 import com.sixgroup.coffeearounducompose.ui.theme.CoffeeAroundUComposeTheme
 import com.sixgroup.coffeearounducompose.ui.theme.DarkBrown
 import com.sixgroup.coffeearounducompose.ui.theme.Grey
@@ -50,9 +51,9 @@ class ItemTryHome {
         model: ProductModel
     ) {
         Card(
-            elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            modifier = Modifier.padding(end = 10.dp, top = 10.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+            colors = CardDefaults.cardColors(containerColor = Accent.copy(0.2f)),
+            modifier = Modifier.padding(start = 5.dp, end = 5.dp, top = 10.dp).fillMaxWidth(),
             onClick = {
                 val intent = Intent(context, DetailViewActivity::class.java)
                 intent.putExtra(Constants.PRODUCT_DETAIL, model)
@@ -60,7 +61,6 @@ class ItemTryHome {
             }
         ) {
             Row(modifier = modifier
-                .background(Color.White)
                 .fillMaxWidth()
                 ) {
                 AsyncImage(

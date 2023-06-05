@@ -40,6 +40,12 @@ interface ApiInterface {
         password: String,
     ): Call<LoginResponse>
 
+    @GET("my_product/{id}/by_toko")
+    suspend fun getProductByToko(
+        @Path("id")
+        id: Int
+    ) : ProductResponse
+
     @GET("my_product")
     suspend fun getAllProducts(): ProductResponse
 

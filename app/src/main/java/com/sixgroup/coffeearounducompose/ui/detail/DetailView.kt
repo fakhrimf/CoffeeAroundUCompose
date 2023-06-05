@@ -1,6 +1,7 @@
 package com.sixgroup.coffeearounducompose.ui.detail
 
 import android.content.Context
+import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -51,8 +52,8 @@ import com.sixgroup.coffeearounducompose.model.ProductModel
 import com.sixgroup.coffeearounducompose.ui.theme.Accent
 import com.sixgroup.coffeearounducompose.ui.theme.CoffeeAroundUComposeTheme
 import com.sixgroup.coffeearounducompose.ui.theme.DarkBrown
-import com.sixgroup.coffeearounducompose.ui.theme.Grey
 import com.sixgroup.coffeearounducompose.ui.theme.MontSerrat
+import com.sixgroup.coffeearounducompose.ui.theme.Star
 import com.sixgroup.coffeearounducompose.utils.Constants
 import java.text.DecimalFormat
 
@@ -120,7 +121,7 @@ class DetailView {
                     Icon(
                         imageVector = Icons.Filled.Star,
                         contentDescription = "Star",
-                        tint = Color.Yellow,
+                        tint = Star,
                         modifier = Modifier.padding(start = 30.dp, top = 10.dp)
                     )
                     Text(
@@ -146,10 +147,12 @@ class DetailView {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 30.dp, vertical = 10.dp),
-                    elevation = CardDefaults.cardElevation(5.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    elevation = CardDefaults.cardElevation(0.dp),
+                    colors = CardDefaults.cardColors(containerColor = Accent.copy(0.2f)),
                     onClick = {
-
+                        val intent = Intent(context, DetailCafeActivity::class.java)
+                        intent.putExtra(Constants.TOKO_DETAIL, toko)
+                        context.startActivity(intent)
                     }
                 ) {
                     if (toko == null) {
@@ -289,6 +292,7 @@ class DetailView {
                             fontSize = 18.sp,
                             color = Accent,
                             modifier = Modifier.padding(top = 10.dp),
+                            fontFamily = MontSerrat
                         )
                     }
 
@@ -308,7 +312,8 @@ class DetailView {
                             text = "Purchase Now",
                             color = Color.White,
                             fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = MontSerrat
                         )
                     }
                 }
