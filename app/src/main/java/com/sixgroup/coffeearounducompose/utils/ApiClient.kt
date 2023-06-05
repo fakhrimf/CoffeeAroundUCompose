@@ -2,6 +2,8 @@ package com.sixgroup.coffeearounducompose.utils
 
 import com.sixgroup.coffeearounducompose.model.LoginResponse
 import com.sixgroup.coffeearounducompose.model.ProductResponse
+import com.sixgroup.coffeearounducompose.model.TokoResponse
+import com.sixgroup.coffeearounducompose.model.TokosResponse
 import com.sixgroup.coffeearounducompose.utils.Constants.BASE_URL
 import okhttp3.OkHttpClient
 import retrofit2.Call
@@ -11,6 +13,7 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import java.util.concurrent.TimeUnit
 
 class ApiClient {
@@ -39,4 +42,13 @@ interface ApiInterface {
 
     @GET("my_product")
     suspend fun getAllProducts(): ProductResponse
+
+    @GET("my_toko")
+    suspend fun getAllTokos(): TokosResponse
+
+    @GET("my_toko/{id}/show")
+    suspend fun getToko(
+        @Path("id")
+        id: Int
+    ): TokoResponse
 }

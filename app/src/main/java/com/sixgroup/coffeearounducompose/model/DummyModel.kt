@@ -13,7 +13,7 @@ object DummyModel {
                     rating = 5.0.toFloat(),
                     foto = "https://img.freepik.com/free-photo/cup-coffee-with-heart-drawn-foam_1286-70.jpg?1&w=996&t=st=1685785985~exp=1685786585~hmac=648f892bd489799ff0af89c50d2c600b9364d3aba785496a0afbfe17e9388835",
                     available = 1,
-                    id_toko = i,
+                    toko_id = i,
                     reason = null,
                     nama_toko = "toko $1"
                 )

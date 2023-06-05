@@ -33,6 +33,7 @@ import com.sixgroup.coffeearounducompose.ui.theme.CoffeeAroundUComposeTheme
 import com.sixgroup.coffeearounducompose.ui.theme.DarkBrown
 import com.sixgroup.coffeearounducompose.ui.theme.Grey
 import com.sixgroup.coffeearounducompose.ui.theme.MontSerrat
+import com.sixgroup.coffeearounducompose.utils.Constants.IMAGE_URL
 
 class ItemCafeHome {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -45,7 +46,7 @@ class ItemCafeHome {
         Column(modifier = modifier.background(Color.White)) {
             AsyncImage(
                 model = ImageRequest.Builder(context = context)
-                    .data(tokoModel.icon_url)
+                    .data("$IMAGE_URL${tokoModel.icon_url}")
                     .crossfade(true)
                     .build(),
                 contentDescription = tokoModel.nama,

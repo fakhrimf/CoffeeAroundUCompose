@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -62,10 +63,12 @@ import androidx.navigation.compose.rememberNavController
 import com.sixgroup.coffeearounducompose.R
 import com.sixgroup.coffeearounducompose.model.DummyModel
 import com.sixgroup.coffeearounducompose.model.ProductModel
+import com.sixgroup.coffeearounducompose.model.TokoModel
 import com.sixgroup.coffeearounducompose.model.UserModel
 import com.sixgroup.coffeearounducompose.ui.akun.AkunView
 import com.sixgroup.coffeearounducompose.ui.items.ItemCafeHome
 import com.sixgroup.coffeearounducompose.ui.items.ItemCoffeeHome
+import com.sixgroup.coffeearounducompose.ui.items.ItemTryHome
 import com.sixgroup.coffeearounducompose.ui.theme.Accent
 import com.sixgroup.coffeearounducompose.ui.theme.CoffeeAroundUComposeTheme
 import com.sixgroup.coffeearounducompose.ui.theme.DarkBrown
@@ -162,51 +165,83 @@ fun PreviewTopBar() {
 @Composable
 fun HomeView(modifier: Modifier = Modifier, activity: ComponentActivity) {
     val viewModel = ViewModelProvider(activity)[HomeViewModel::class.java]
-    var isLoading by rememberSaveable {
-        mutableStateOf(true)
-    }
-    Column(modifier = modifier) {
-        Text(
-            text = "Coffee Around U",
-            fontFamily = MontSerrat,
-            fontWeight = FontWeight.Medium,
-            fontSize = 18.sp,
-            color = Color.Black,
-            modifier = Modifier.padding(start = 24.dp, top = 24.dp)
-        )
-        viewModel.getAllProducts()
-        val products by viewModel.products.collectAsState()
-        LazyRow(modifier = Modifier.fillMaxWidth()) {
-            Log.d("DATA", "HomeView: $viewModel.products")
-            itemsIndexed(products) {index, model ->
-                Log.d("bruh", "HomeView: $model")
-                if (index == 0) {
-                    Spacer(modifier = Modifier.padding(5.dp))
-                }
-                ItemCoffeeHome().ItemCoffee(
-                    context = LocalContext.current,
-                    model = model,
+    viewModel.getAllProducts()
+    viewModel.getAllTokos()
+    val products by viewModel.products.collectAsState()
+    val tokos by viewModel.tokos.collectAsState()
+    if (products.isEmpty() || tokos.isEmpty()) {
+        Column(modifier = modifier
+            .fillMaxWidth()
+            .fillMaxHeight(),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                CircularProgressIndicator(
+                    color = Accent
                 )
             }
         }
-        Text(
-            text = "Cafe Around U",
-            fontFamily = MontSerrat,
-            fontWeight = FontWeight.Medium,
-            fontSize = 18.sp,
-            color = Color.Black,
-            modifier = Modifier.padding(start = 24.dp, top = 24.dp)
-        )
-        LazyRow(modifier = Modifier.fillMaxWidth()) {
-            val tokos = DummyModel.generateDummyTokos(10)
-            items(tokos.toList(), key = { it.id }) {
-                if (it.id == 0) {
-                    Spacer(modifier = Modifier.padding(5.dp))
+    } else {
+        Column(modifier = modifier) {
+            Text(
+                text = "Coffee Around U",
+                fontFamily = MontSerrat,
+                fontWeight = FontWeight.Medium,
+                fontSize = 18.sp,
+                color = Color.Black,
+                modifier = Modifier.padding(start = 24.dp, top = 24.dp)
+            )
+            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                itemsIndexed(products) {index, model ->
+                    if (index == 0) {
+                        Spacer(modifier = Modifier.padding(5.dp))
+                    }
+                    ItemCoffeeHome().ItemCoffee(
+                        context = LocalContext.current,
+                        model = model,
+                    )
                 }
-                ItemCafeHome().ItemCafe(
-                    context = LocalContext.current,
-                    tokoModel = it
-                )
+            }
+            Text(
+                text = "Cafe Around U",
+                fontFamily = MontSerrat,
+                fontWeight = FontWeight.Medium,
+                fontSize = 18.sp,
+                color = Color.Black,
+                modifier = Modifier.padding(start = 24.dp, top = 24.dp)
+            )
+            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                itemsIndexed(tokos) {index, it ->
+                    if (index == 0) {
+                        Spacer(modifier = Modifier.padding(5.dp))
+                    }
+                    ItemCafeHome().ItemCafe(
+                        context = LocalContext.current,
+                        tokoModel = it
+                    )
+                }
+            }
+            Text(
+                text = "Try this!",
+                fontFamily = MontSerrat,
+                fontWeight = FontWeight.Medium,
+                fontSize = 18.sp,
+                color = Color.Black,
+                modifier = Modifier.padding(start = 24.dp, top = 24.dp)
+            )
+            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                val tryArray = ArrayList<ProductModel>()
+                for (i in 0 until 5)
+                    tryArray.add(products.random())
+                itemsIndexed(tryArray) {index, model ->
+                    if (index == 0) {
+                        Spacer(modifier = Modifier.padding(5.dp))
+                    }
+                    ItemTryHome().ItemCoffee(
+                        context = LocalContext.current,
+                        model = model,
+                    )
+                }
             }
         }
     }

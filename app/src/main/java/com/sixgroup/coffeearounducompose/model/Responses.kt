@@ -17,3 +17,15 @@ data class ProductResponse(
     @SerializedName("data")
     val data: ArrayList<ProductModel>
 ) : Parcelable
+
+@Parcelize
+data class TokosResponse(
+    @SerializedName("data")
+    val data: ArrayList<TokoModel>
+) : Parcelable
+
+@Parcelize
+data class TokoResponse(
+    @SerializedName("data")
+    val data: TokoModel
+) : Parcelable

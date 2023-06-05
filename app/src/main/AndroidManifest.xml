@@ -15,6 +15,11 @@
         android:theme="@style/Theme.CoffeeAroundUCompose"
         tools:targetApi="31">
         <activity
+            android:name=".ui.detail.DetailViewActivity"
+            android:exported="false"
+            android:label="@string/title_activity_detail_view"
+            android:theme="@style/Theme.CoffeeAroundUCompose" />
+        <activity
             android:name=".ui.transaksi.TransaksiActivity"
             android:exported="false"
             android:label="@string/title_activity_transaksi"

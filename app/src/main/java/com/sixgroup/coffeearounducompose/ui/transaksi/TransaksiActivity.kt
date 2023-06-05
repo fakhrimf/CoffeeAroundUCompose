@@ -114,7 +114,7 @@ fun TabScreenOngoing(context: Context) {
             Box(modifier = Modifier.padding(horizontal = 10.dp)) {
                 ItemTransaction().ItemTransactionView(
                     model = it,
-                    tokoModel = tokos[it.id_toko],
+                    tokoModel = tokos[it.toko_id],
                     context = context,
                     isOngoing = true
                 )
@@ -134,7 +134,7 @@ fun TabScreenDone(context: Context) {
             Box(modifier = Modifier.padding(horizontal = 10.dp)) {
                 ItemTransaction().ItemTransactionView(
                     model = it,
-                    tokoModel = tokos[it.id_toko],
+                    tokoModel = tokos[it.toko_id],
                     context = context,
                     isOngoing = false
                 )

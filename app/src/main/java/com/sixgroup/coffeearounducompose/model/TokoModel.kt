@@ -12,9 +12,9 @@ data class TokoModel(
     var nama: String,
     @SerializedName("address")
     var address: String,
-    @SerializedName("lat")
+    @SerializedName("latitude")
     var lat: Float,
-    @SerializedName("lon")
+    @SerializedName("longitude")
     var lon: Float,
     @SerializedName("icon_url")
     var icon_url: String,
