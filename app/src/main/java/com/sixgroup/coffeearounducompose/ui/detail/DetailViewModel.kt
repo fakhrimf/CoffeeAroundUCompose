@@ -15,6 +15,8 @@ import kotlinx.coroutines.launch
 class DetailViewModel: ViewModel() {
     val _products = MutableStateFlow(ArrayList<ProductModel>())
     val products = _products.asStateFlow()
+    val _buy = MutableStateFlow(false)
+    val buy = _buy.asStateFlow()
     var placeholder: TokoModel? = null
     val _toko = MutableStateFlow(placeholder)
     val toko = _toko.asStateFlow()
@@ -40,6 +42,15 @@ class DetailViewModel: ViewModel() {
             Log.d("HASIL RESPONSE", "getAllTokos: $call")
             _products.update {
                 call.data
+            }
+        }
+    }
+
+    fun buyProduct(userId: Int, productId: Int) {
+        viewModelScope.launch {
+            val transaksi = apiInterface.transaksi(productId, userId)
+            _buy.update {
+                transaksi.success
             }
         }
     }

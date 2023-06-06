@@ -1,8 +1,8 @@
 package com.sixgroup.coffeearounducompose.ui.home
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -17,13 +17,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Logout
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -40,11 +37,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -60,11 +52,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.sixgroup.coffeearounducompose.MainActivity
 import com.sixgroup.coffeearounducompose.R
-import com.sixgroup.coffeearounducompose.model.DummyModel
 import com.sixgroup.coffeearounducompose.model.ProductModel
-import com.sixgroup.coffeearounducompose.model.TokoModel
-import com.sixgroup.coffeearounducompose.model.UserModel
 import com.sixgroup.coffeearounducompose.ui.akun.AkunView
 import com.sixgroup.coffeearounducompose.ui.items.ItemCafeHome
 import com.sixgroup.coffeearounducompose.ui.items.ItemCoffeeHome
@@ -76,8 +66,6 @@ import com.sixgroup.coffeearounducompose.ui.theme.MontSerrat
 import com.sixgroup.coffeearounducompose.ui.transaksi.TransaksiView
 import com.sixgroup.coffeearounducompose.utils.BottomNavItem
 import com.sixgroup.coffeearounducompose.utils.Repository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,7 +77,7 @@ class HomeActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeContent(this)
+                    HomeContent(this, LocalContext.current)
                 }
             }
         }
@@ -98,11 +86,11 @@ class HomeActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeContent(activity: ComponentActivity) {
+fun HomeContent(activity: ComponentActivity, context: Context) {
     val navController = rememberNavController()
     Scaffold(
         topBar = {
-            TopBar()
+            TopBar(context = context, activity = activity)
         },
         bottomBar = {
             BottomNav(navController = navController)
@@ -121,7 +109,7 @@ fun HomeContent(activity: ComponentActivity) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar() {
+fun TopBar(context: Context, activity: ComponentActivity) {
     TopAppBar(
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = Color.White
@@ -136,14 +124,18 @@ fun TopBar() {
             )
         },
         actions = {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(
-                    imageVector = Icons.Filled.Search,
-                    contentDescription = "Search",
-                    tint = DarkBrown
-                )
-            }
-            IconButton(onClick = { /*TODO*/ }) {
+//            IconButton(onClick = { /*TODO*/ }) {
+//                Icon(
+//                    imageVector = Icons.Filled.Search,
+//                    contentDescription = "Search",
+//                    tint = DarkBrown
+//                )
+//            }
+            IconButton(onClick = {
+                Repository.logout(context = context)
+                context.startActivity(Intent(context, MainActivity::class.java))
+                activity.finish()
+            }) {
                 Icon(
                     imageVector = Icons.Filled.Logout,
                     contentDescription = "Logout",
@@ -158,7 +150,7 @@ fun TopBar() {
 @Composable
 fun PreviewTopBar() {
     CoffeeAroundUComposeTheme {
-        TopBar()
+//        TopBar()
     }
 }
 
@@ -170,9 +162,10 @@ fun HomeView(modifier: Modifier = Modifier, activity: ComponentActivity) {
     val products by viewModel.products.collectAsState()
     val tokos by viewModel.tokos.collectAsState()
     if (products.isEmpty() || tokos.isEmpty()) {
-        Column(modifier = modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
+        Column(
+            modifier = modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
             verticalArrangement = Arrangement.Center
         ) {
             Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
@@ -192,7 +185,7 @@ fun HomeView(modifier: Modifier = Modifier, activity: ComponentActivity) {
                 modifier = Modifier.padding(start = 24.dp, top = 24.dp)
             )
             LazyRow(modifier = Modifier.fillMaxWidth()) {
-                itemsIndexed(products) {index, model ->
+                itemsIndexed(products) { index, model ->
                     if (index == 0) {
                         Spacer(modifier = Modifier.padding(5.dp))
                     }
@@ -211,7 +204,7 @@ fun HomeView(modifier: Modifier = Modifier, activity: ComponentActivity) {
                 modifier = Modifier.padding(start = 24.dp, top = 24.dp)
             )
             LazyRow(modifier = Modifier.fillMaxWidth()) {
-                itemsIndexed(tokos) {index, it ->
+                itemsIndexed(tokos) { index, it ->
                     if (index == 0) {
                         Spacer(modifier = Modifier.padding(5.dp))
                     }
@@ -233,7 +226,7 @@ fun HomeView(modifier: Modifier = Modifier, activity: ComponentActivity) {
                 val tryArray = ArrayList<ProductModel>()
                 for (i in 0 until 5)
                     tryArray.add(products.random())
-                itemsIndexed(tryArray) {index, model ->
+                itemsIndexed(tryArray) { index, model ->
                     if (index == 0) {
                         Spacer(modifier = Modifier.padding(5.dp))
                     }
@@ -311,21 +304,14 @@ fun MainNavGraph(
             HomeView(activity = activity)
         }
         composable(BottomNavItem.Transaksi.route) {
-            TransaksiView(context = context)
+            TransaksiView(context = context, activity = activity)
         }
         composable(BottomNavItem.Akun.route) {
-            val userModel = UserModel(
-                id = 1,
-                address = "Rumah",
-                email = "User@gmail.com",
-                foto = "https://cdn.discordapp.com/attachments/775027234096414720/1079261802526945401/image.png",
-                name = "MePet",
-                password = "lohe",
-                phone_number = "+62821756390",
-                role = "user",
-                token = ""
+            AkunView().AkunPage(
+                model = Repository.getLoginKey(context),
+                context = context,
+                activity = activity
             )
-            AkunView().AkunPage(model = Repository.getLoginKey(context), context = context)
         }
     }
 }
@@ -334,6 +320,6 @@ fun MainNavGraph(
 @Composable
 fun HomeContentPreview() {
     CoffeeAroundUComposeTheme {
-        HomeContent(HomeActivity())
+//        HomeContent(HomeActivity())
     }
 }

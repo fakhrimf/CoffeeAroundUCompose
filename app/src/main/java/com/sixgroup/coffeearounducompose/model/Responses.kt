@@ -29,3 +29,27 @@ data class TokoResponse(
     @SerializedName("data")
     val data: TokoModel
 ) : Parcelable
+
+@Parcelize
+data class RegisterResponse(
+    @SerializedName("success")
+    val success: Boolean,
+    @SerializedName("message")
+    val message: String?,
+    @SerializedName("data")
+    val data:UserModel
+) : Parcelable
+
+@Parcelize
+data class BuyResponse(
+    @SerializedName("success")
+    val success: Boolean,
+    @SerializedName("message")
+    val message: String?
+) : Parcelable
+
+@Parcelize
+data class TransactionResponse(
+    @SerializedName("data")
+    val data: ArrayList<TransactionModel>
+) : Parcelable

@@ -9,8 +9,17 @@ object Constants {
     // INTENTS
     const val PRODUCT_DETAIL = "productdetailintent"
     const val TOKO_DETAIL = "tokodetailintent"
+    const val IMAGE_TYPE = "image/*"
 
     // SHARED PREFERENCES
     const val SHARED_KEY = "sharedprefscoffee"
     const val LOGIN_KEY = "sp_login"
+
+    // REQUEST CODES
+    const val CAMERA_REQUEST_CODE = 34
+    const val STORAGE_REQUEST_CODE = 69
+    const val IMAGE_REQUEST_CODE = 71
+
+    // UTILITIES
+    const val MAXIMAL_SIZE = 1000000
 }

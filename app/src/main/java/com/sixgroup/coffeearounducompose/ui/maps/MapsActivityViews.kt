@@ -1,10 +1,13 @@
 package com.sixgroup.coffeearounducompose.ui.maps
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -52,10 +55,18 @@ class MapsActivityViews : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         val toko = intent.getParcelableExtra<TokoModel>(Constants.TOKO_DETAIL)!!
-        // Add a marker in Sydney and move the camera
-//        mMap.isMyLocationEnabled = true
         val tokolokasi = LatLng(toko.lat.toDouble(), toko.lon.toDouble())
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            mMap.isMyLocationEnabled = true
+        }
         mMap.addMarker(MarkerOptions().position(tokolokasi).title(toko.nama))
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(tokolokasi, 100f))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(tokolokasi, 20f))
     }
 }

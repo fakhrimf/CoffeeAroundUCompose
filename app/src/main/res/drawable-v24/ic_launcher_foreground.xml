@@ -1,4 +1,17 @@
-<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
-    android:src="@drawable/coffeebeans"
-    android:scaleX="0.4"
-    android:scaleY="0.4"/>
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:bottom="45dp"
+        android:left="45dp"
+        android:right="45dp"
+        android:top="45dp">
+        <bitmap
+            android:src="@drawable/coffeebeans">
+        </bitmap>
+
+    </item>
+
+
+</layer-list>

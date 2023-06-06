@@ -57,6 +57,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import com.sixgroup.coffeearounducompose.R
 import com.sixgroup.coffeearounducompose.ui.home.HomeActivity
+import com.sixgroup.coffeearounducompose.ui.register.RegisterActivity
 import com.sixgroup.coffeearounducompose.ui.theme.Accent
 import com.sixgroup.coffeearounducompose.ui.theme.Background
 import com.sixgroup.coffeearounducompose.ui.theme.CoffeeAroundUComposeTheme
@@ -220,7 +221,7 @@ class LoginView {
                     Modifier
                         .padding(start = 10.dp)
                         .clickable {
-
+                            context.startActivity(Intent(context, RegisterActivity::class.java))
                         })
             }
         }

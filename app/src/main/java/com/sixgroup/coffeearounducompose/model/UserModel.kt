@@ -25,3 +25,19 @@ data class UserModel(
     @SerializedName("token")
     var token: String,
 ) : Parcelable
+
+@Parcelize
+data class RegisterUserModel(
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("email")
+    val email: String,
+    @SerializedName("password")
+    val password: String,
+    @SerializedName("address")
+    val address: String,
+    @SerializedName("phone_number")
+    var phone_number: String,
+    @SerializedName("role")
+    val role: String = "pembeli"
+) : Parcelable

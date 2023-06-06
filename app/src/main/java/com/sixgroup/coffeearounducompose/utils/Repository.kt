@@ -24,4 +24,8 @@ object Repository {
             LOGIN_KEY, Gson().toJson(model)
         ).apply()
     }
+
+    fun logout(context: Context) {
+        context.getSharedPreferences(SHARED_KEY, Context.MODE_PRIVATE).edit().remove(LOGIN_KEY).apply()
+    }
 }

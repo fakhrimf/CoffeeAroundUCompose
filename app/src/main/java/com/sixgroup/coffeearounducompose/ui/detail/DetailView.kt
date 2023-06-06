@@ -2,6 +2,7 @@ package com.sixgroup.coffeearounducompose.ui.detail
 
 import android.content.Context
 import android.content.Intent
+import android.os.CountDownTimer
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -33,6 +34,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -49,12 +52,16 @@ import coil.request.ImageRequest
 import com.sixgroup.coffeearounducompose.R
 import com.sixgroup.coffeearounducompose.model.DummyModel
 import com.sixgroup.coffeearounducompose.model.ProductModel
+import com.sixgroup.coffeearounducompose.ui.dialog.DialogBuyProduct
 import com.sixgroup.coffeearounducompose.ui.theme.Accent
 import com.sixgroup.coffeearounducompose.ui.theme.CoffeeAroundUComposeTheme
 import com.sixgroup.coffeearounducompose.ui.theme.DarkBrown
 import com.sixgroup.coffeearounducompose.ui.theme.MontSerrat
 import com.sixgroup.coffeearounducompose.ui.theme.Star
 import com.sixgroup.coffeearounducompose.utils.Constants
+import com.sixgroup.coffeearounducompose.utils.Repository
+import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.flow.update
 import java.text.DecimalFormat
 
 class DetailView {
@@ -62,6 +69,12 @@ class DetailView {
     @Composable
     fun DetailPage(model: ProductModel, context: Context, activity: ComponentActivity) {
         val vm = ViewModelProvider(activity)[DetailViewModel::class.java]
+        val openDialog = remember {
+            mutableStateOf(false)
+        }
+        val buyProduct = remember {
+            mutableStateOf(false)
+        }
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
@@ -295,9 +308,44 @@ class DetailView {
                             fontFamily = MontSerrat
                         )
                     }
+                    val allowBuy = remember {
+                        mutableStateOf(false)
+                    }
+                    val currentlyBuying = remember {
+                        mutableStateOf(false)
+                    }
+                    if (openDialog.value) {
+                        DialogBuyProduct().GetDialogBuyProduct(openDialog = openDialog, buyProduct = buyProduct)
+                        allowBuy.value = true
+                    } else {
+                        currentlyBuying.value = false
+                    }
+                    val timer = object: CountDownTimer(5000, 1000) {
+                        override fun onTick(millisUntilFinished: Long) {
 
+                        }
+
+                        override fun onFinish() {
+                            allowBuy.value = true
+                        }
+
+                    }
+                    if (buyProduct.value && allowBuy.value) {
+                        vm.buyProduct(Repository.getLoginKey(context).id, model.id)
+                        allowBuy.value = false
+                        buyProduct.value = false
+                        timer.start()
+                    }
+                    val buy = vm.buy.collectAsState()
+                    if (buy.value) {
+                        Toasty.success(context, "Produk sukses dipesan!").show()
+                        currentlyBuying.value = false
+                    }
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            openDialog.value = true
+                            currentlyBuying.value = true
+                        },
                         shape = RoundedCornerShape(8.dp),
                         border = BorderStroke(1.dp, Accent),
                         colors = ButtonDefaults.buttonColors(
@@ -307,22 +355,22 @@ class DetailView {
                             .padding(start = 14.dp, top = 32.dp)
                             .height(62.dp)
                             .width(218.dp),
+                        enabled = !currentlyBuying.value
                     ) {
-                        Text(
-                            text = "Purchase Now",
-                            color = Color.White,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = MontSerrat
-                        )
+                        if (!currentlyBuying.value)
+                            Text(
+                                text = "Purchase Now",
+                                color = Color.White,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = MontSerrat
+                            )
+                        else
+                            CircularProgressIndicator(color = Accent)
                     }
                 }
-
-
             }
         }
-
-
     }
 
     @Preview

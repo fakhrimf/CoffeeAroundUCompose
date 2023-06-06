@@ -1,6 +1,7 @@
 package com.sixgroup.coffeearounducompose.ui.items
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -28,31 +30,37 @@ import coil.request.ImageRequest
 import com.sixgroup.coffeearounducompose.R
 import com.sixgroup.coffeearounducompose.model.ProductModel
 import com.sixgroup.coffeearounducompose.model.TokoModel
+import com.sixgroup.coffeearounducompose.ui.detail.DetailViewActivity
 import com.sixgroup.coffeearounducompose.ui.theme.Accent
 import com.sixgroup.coffeearounducompose.ui.theme.DarkBrown
 import com.sixgroup.coffeearounducompose.ui.theme.Grey
 import com.sixgroup.coffeearounducompose.ui.theme.MontSerrat
+import com.sixgroup.coffeearounducompose.utils.Constants
+import com.sixgroup.coffeearounducompose.utils.Constants.IMAGE_URL
 import java.text.DecimalFormat
 
 class ItemTransaction {
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun ItemTransactionView(
         model: ProductModel,
-        tokoModel: TokoModel,
         context: Context,
         isOngoing: Boolean = true
     ) {
         Card(
             modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White
-            )
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+            colors = CardDefaults.cardColors(containerColor = Accent.copy(0.2f)),
+            onClick = {
+                val intent = Intent(context, DetailViewActivity::class.java)
+                intent.putExtra(Constants.PRODUCT_DETAIL, model)
+                context.startActivity(intent)
+            }
         ) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 AsyncImage(
                     model = ImageRequest.Builder(context = context)
-                        .data(model.foto)
+                        .data("$IMAGE_URL${model.foto}")
                         .crossfade(true)
                         .build(),
                     contentDescription = model.nama,
@@ -74,7 +82,7 @@ class ItemTransaction {
                         modifier = Modifier.padding(top = 10.dp)
                     )
                     Text(
-                        text = tokoModel.nama,
+                        text = model.nama_toko,
                         fontFamily = MontSerrat,
                         fontWeight = FontWeight.Medium,
                         fontSize = 12.sp,
@@ -93,7 +101,7 @@ class ItemTransaction {
                             )
                         ) {
                             Text(
-                                text = if (isOngoing) "Ongoing" else "Done",
+                                text = "Ready",
                                 fontFamily = MontSerrat,
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 14.sp,
@@ -140,6 +148,6 @@ class ItemTransaction {
             "https://img.freepik.com/free-photo/top-view-hot-espresso-with-brown-coffee-seeds-brown-wooden-desk-coffee-cup-drink_140725-28168.jpg?w=740&t=st=1685772072~exp=1685772672~hmac=5377644915f2e0afe784484004834a50a7e3be388e1fbdf1a77a3ef5fa585671",
             1
         )
-        ItemTransactionView(model = model, tokoModel = tokoModel, context = LocalContext.current)
+//        ItemTransactionView(model = model, tokoModel = tokoModel, context = LocalContext.current)
     }
 }

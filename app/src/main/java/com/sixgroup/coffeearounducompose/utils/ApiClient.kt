@@ -1,14 +1,19 @@
 package com.sixgroup.coffeearounducompose.utils
 
+import com.sixgroup.coffeearounducompose.model.BuyResponse
 import com.sixgroup.coffeearounducompose.model.LoginResponse
 import com.sixgroup.coffeearounducompose.model.ProductResponse
+import com.sixgroup.coffeearounducompose.model.RegisterResponse
+import com.sixgroup.coffeearounducompose.model.RegisterUserModel
 import com.sixgroup.coffeearounducompose.model.TokoResponse
 import com.sixgroup.coffeearounducompose.model.TokosResponse
+import com.sixgroup.coffeearounducompose.model.TransactionResponse
 import com.sixgroup.coffeearounducompose.utils.Constants.BASE_URL
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -57,4 +62,25 @@ interface ApiInterface {
         @Path("id")
         id: Int
     ): TokoResponse
+
+    @POST("register")
+    suspend fun register(
+        @Body
+        model: RegisterUserModel
+    ) : RegisterResponse
+
+    @FormUrlEncoded
+    @POST("transaksi")
+    suspend fun transaksi(
+        @Field("prod_id")
+        prodId: Int,
+        @Field("user_id")
+        userId: Int
+    ) : BuyResponse
+
+    @GET("transaksi/{id}/by_user")
+    suspend fun getTransaksiById(
+        @Path("id")
+        id: Int
+    ): TransactionResponse
 }
