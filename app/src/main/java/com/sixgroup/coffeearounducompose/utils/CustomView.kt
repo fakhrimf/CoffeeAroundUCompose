@@ -10,6 +10,22 @@ import com.sixgroup.coffeearounducompose.ui.theme.Accent
 import com.sixgroup.coffeearounducompose.ui.theme.DarkBrown
 import com.sixgroup.coffeearounducompose.ui.theme.Greenish
 import com.sixgroup.coffeearounducompose.ui.theme.MontSerrat
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
+
 
 object CustomView {
     @Composable
@@ -74,6 +90,31 @@ object CustomView {
             fontSize = 18.sp,
             lineHeight = 18.sp,
             modifier = modifier,
+        )
+    }
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun SearchView(
+        modifier: Modifier = Modifier,
+        state: (TextFieldValue) -> Unit,
+        value: TextFieldValue
+    ) {
+        TextField(
+            value = value,
+            onValueChange = state,
+            modifier = modifier.fillMaxWidth(),
+            textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onPrimary),
+            leadingIcon = {
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = "",
+                    modifier = Modifier
+                        .padding(15.dp)
+                        .size(24.dp)
+                )
+            },
+            singleLine = true,
+            shape = RectangleShape
         )
     }
 }

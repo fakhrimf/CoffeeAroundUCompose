@@ -155,7 +155,7 @@ fun CafeDetailView(model: TokoModel, context: Context, activity: ComponentActivi
                     defaultElevation = 0.dp
                 ),
                 onClick = {
-                    val intent = Intent(context, MapsActivityViews::class.java)
+                    val intent = Intent(context, MapsActivity::class.java)
                     intent.putExtra(TOKO_DETAIL, model)
                     context.startActivity(intent)
                 }

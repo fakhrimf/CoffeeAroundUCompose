@@ -59,6 +59,7 @@ import com.sixgroup.coffeearounducompose.ui.akun.AkunView
 import com.sixgroup.coffeearounducompose.ui.items.ItemCafeHome
 import com.sixgroup.coffeearounducompose.ui.items.ItemCoffeeHome
 import com.sixgroup.coffeearounducompose.ui.items.ItemTryHome
+import com.sixgroup.coffeearounducompose.ui.search.SearchProductView
 import com.sixgroup.coffeearounducompose.ui.theme.Accent
 import com.sixgroup.coffeearounducompose.ui.theme.CoffeeAroundUComposeTheme
 import com.sixgroup.coffeearounducompose.ui.theme.DarkBrown
@@ -244,6 +245,7 @@ fun HomeView(modifier: Modifier = Modifier, activity: ComponentActivity) {
 fun BottomNav(navController: NavController) {
     val items = listOf(
         BottomNavItem.Home,
+        BottomNavItem.Search,
         BottomNavItem.Transaksi,
         BottomNavItem.Akun,
     )
@@ -302,6 +304,9 @@ fun MainNavGraph(
     ) {
         composable(BottomNavItem.Home.route) {
             HomeView(activity = activity)
+        }
+        composable(BottomNavItem.Search.route) {
+            SearchProductView().SearchProductPage(activity = activity)
         }
         composable(BottomNavItem.Transaksi.route) {
             TransaksiView(context = context, activity = activity)

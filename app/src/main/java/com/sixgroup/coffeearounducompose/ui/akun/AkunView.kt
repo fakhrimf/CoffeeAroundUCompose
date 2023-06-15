@@ -61,6 +61,14 @@ class AkunView {
 //                color = DarkBrown,
 //                modifier = Modifier.padding(start = 10.dp, top = 24.dp)
 //            )
+            Text(
+                text = "Akun Saya",
+                fontFamily = MontSerrat,
+                fontWeight = FontWeight.Medium,
+                fontSize = 18.sp,
+                color = Color.Black,
+                modifier = Modifier.padding(start = 24.dp, top = 24.dp, bottom = 10.dp)
+            )
             Card(
                 modifier = Modifier.padding(10.dp), colors = CardDefaults.cardColors(
                     containerColor = Grey.copy(0.2f)

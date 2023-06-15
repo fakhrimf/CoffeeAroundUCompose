@@ -78,7 +78,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.sixgroup.coffeearounducompose.model.RegisterUserModel
 import com.sixgroup.coffeearounducompose.ui.dialog.DialogPickImage
 import com.sixgroup.coffeearounducompose.ui.theme.Accent
@@ -130,7 +132,7 @@ class RegisterActivity : ComponentActivity() {
                         RegisterView(
                             context = LocalContext.current,
                             this,
-                            bitmap = bitmap.asImageBitmap()
+                            path = path.toString()
                         )
                     }
                 }
@@ -148,7 +150,7 @@ class RegisterActivity : ComponentActivity() {
                         RegisterView(
                             context = LocalContext.current,
                             this,
-                            bitmap = result.asImageBitmap()
+                            path = photoPath
                         )
                     }
                 }
@@ -168,19 +170,7 @@ class RegisterActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterView(context: Context, activity: ComponentActivity, bitmap: ImageBitmap? = null) {
-    val launcher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            // Permission Accepted: Do something
-            Log.d("ExampleScreen", "PERMISSION GRANTED")
-
-        } else {
-            // Permission Denied: Do something
-            Log.d("ExampleScreen", "PERMISSION DENIED")
-        }
-    }
+fun RegisterView(context: Context, activity: ComponentActivity, path: String? = null) {
     Scaffold(
         containerColor = Background,
         topBar = {
@@ -202,7 +192,7 @@ fun RegisterView(context: Context, activity: ComponentActivity, bitmap: ImageBit
             context = context,
             modifier = Modifier.padding(it),
             activity = activity,
-            bitmap = bitmap
+            path = path
         )
     }
 }
@@ -232,7 +222,7 @@ fun RegisterFields(
     context: Context,
     modifier: Modifier = Modifier,
     activity: ComponentActivity,
-    bitmap: ImageBitmap? = null
+    path: String?
 ) {
     val openDialog = remember {
         mutableStateOf(false)
@@ -292,9 +282,12 @@ fun RegisterFields(
                             .clip(CircleShape)
                             .background(DarkBrown)
                     ) {
-                        if (bitmap != null) {
-                            Image(
-                                painter = rememberAsyncImagePainter(model = bitmap.asAndroidBitmap()),
+                        if (!path.isNullOrEmpty()) {
+                            AsyncImage(
+                                model = ImageRequest.Builder(context = context)
+                                    .data(path)
+                                    .crossfade(true)
+                                    .build(),
                                 contentDescription = "Profile Picture",
                                 alignment = Alignment.Center,
                                 contentScale = ContentScale.Crop,
@@ -323,7 +316,7 @@ fun RegisterFields(
                                     }
                             )
                         }
-                        Log.d("GAMBAR", "RegisterFields: ${bitmap?.height}")
+                        Log.d("GAMBAR", "RegisterFields: $photoPath")
                     }
                     Box(
                         modifier = Modifier
@@ -422,8 +415,11 @@ fun RegisterFields(
                                 activity.finish()
                             }
                         } else {
-                            Toasty.warning(context, "Something went wrong, try registering again").show()
+                            Toasty.warning(context, "Terjadi kesalahan, coba register kembali").show()
                         }
+                        isRegistering.value = false
+                    } else {
+                        Toasty.warning(context, "Isi semua field yang ada").show()
                         isRegistering.value = false
                     }
                 },
